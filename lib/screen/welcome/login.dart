@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:test2/screen/welcome/register.dart';
 import 'package:test2/screen/welcome/welcome_page.dart';
+import 'package:test2/screen/welcome/forgotpassword.dart';
+
 
 class LoginPage extends StatelessWidget {
   @override
@@ -54,8 +56,11 @@ class LoginPage extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
-                  // Điều hướng đến trang quên mật khẩu (thêm trang nếu cần)
-                  // Ví dụ: Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordPage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ForgotPasswordPage()),
+                  );
                 },
                 child: Text(
                   "Quên mật khẩu?",
