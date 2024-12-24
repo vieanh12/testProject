@@ -9,7 +9,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailorphoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
@@ -97,17 +97,18 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
-                  controller: _emailController,
+                  controller: _emailorphoneController,
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: "Email, SĐT",
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Vui lòng nhập email.";
+                      return "Vui lòng nhập email hoặc số điện thoại.";
                     }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return "Email không hợp lệ.";
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value) &&
+                        !RegExp(r'^\d{10}$').hasMatch(value)) {
+                      return "Email hoặc Số điện thoại không hợp lệ.";
                     }
                     return null;
                   },

@@ -10,7 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailorphoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
@@ -76,17 +76,18 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
-                  controller: _emailController,
+                  controller: _emailorphoneController,
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: "Email hoặc Số điện thoại",
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Vui lòng nhập email.";
+                      return "Vui lòng nhập email hoặc số điện thoại.";
                     }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return "Email không hợp lệ.";
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value) &&
+                        !RegExp(r'^\d{10}$').hasMatch(value)) {
+                      return "Email hoặc Số điện thoại không hợp lệ.";
                     }
                     return null;
                   },

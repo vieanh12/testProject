@@ -51,7 +51,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       showOptions = true; // Hiển thị các tùy chọn Login và Register
                     });
                   },
-                  child: Text("Let's Start"),
+                  child: Text("Bắt Đầu"),
                 ),
               ] else ...[
                 // Hiển thị các nút Login và Register khi nhấn Let's Start
@@ -67,7 +67,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       MaterialPageRoute(builder: (context) => LoginPage()),
                     );
                   },
-                  child: Text("Login"),
+                  child: Text("Đăng nhập"),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
@@ -82,7 +82,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       MaterialPageRoute(builder: (context) => RegisterPage()),
                     );
                   },
-                  child: Text("Register"),
+                  child: Text("Đăng kí"),
                 ),
               ],
             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test2/screen/welcome/resetpassword.dart';
+import 'package:test2/screen/welcome/otpverify.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   @override
@@ -7,42 +8,61 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailOrPhoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
 
-  void sendResetLink() {
+  void handleForgotPassword() {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+      final input = _emailOrPhoneController.text;
 
-      // Giả lập gửi liên kết đặt lại mật khẩu
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = false;
-        });
-
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Thành công"),
-            content: Text("Liên kết đặt lại mật khẩu đã được gửi đến email của bạn."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Đóng dialog
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => ResetPasswordPage())
-                  );
-                },
-                child: Text("OK"),
-              ),
-            ],
-          ),
+      // Kiểm tra đầu vào là email hay số điện thoại
+      if (RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(input)) {
+        // Gọi API cho email
+        sendEmailApi(input);
+      } else if (RegExp(r'^\d{10}$').hasMatch(input)) {
+        // Gọi API cho số điện thoại
+        sendSmsApi(input);
+      } else {
+        // Không hợp lệ (nếu validate bị lỗi)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Lỗi: Không hợp lệ")),
         );
-      });
+      }
     }
+  }
+
+  void sendEmailApi(String email) {
+    if (email.isEmpty || !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Email không hợp lệ.")),
+      );
+      return;
+    }
+
+    // Giả lập gửi OTP qua email
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Đã gửi mã OTP đến $email.")),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OtpVerifyPage(identifier: email, isPhone: false),
+      ),
+    );
+  }
+
+
+  void sendSmsApi(String phone) {
+    // Gửi API cho số điện thoại
+    // Giả lập xử lý thành công
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ResetPasswordPage(
+        identifier: phone, // Truyền số điện thoại
+        isPhone: true, // Xác định đây là số điện thoại
+      )),
+    );
   }
 
   @override
@@ -62,57 +82,46 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  "Quên Mật Khẩu",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
-                  textAlign: TextAlign.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                "Quên Mật Khẩu",
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
                 ),
-                SizedBox(height: 20),
-                Text(
-                  "Nhập email của bạn để nhận liên kết đặt lại mật khẩu.",
-                  style: TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _emailOrPhoneController,
+                decoration: InputDecoration(
+                  labelText: "Email hoặc Số điện thoại",
+                  border: OutlineInputBorder(),
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Vui lòng nhập email.";
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return "Email không hợp lệ.";
-                    }
-                    return null;
-                  },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Vui lòng nhập email hoặc số điện thoại.";
+                  }
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value) &&
+                      !RegExp(r'^\d{10}$').hasMatch(value)) {
+                    return "Nhập email hoặc số điện thoại hợp lệ.";
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  padding: EdgeInsets.symmetric(vertical: 16),
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: _isLoading ? null : sendResetLink,
-                  child: _isLoading
-                      ? CircularProgressIndicator(
-                    color: Colors.white,
-                  )
-                      : Text("Gửi liên kết đặt lại mật khẩu"),
-                ),
-              ],
-            ),
+                onPressed: handleForgotPassword,
+                child: Text("Gửi mã"),
+              ),
+            ],
           ),
         ),
       ),
