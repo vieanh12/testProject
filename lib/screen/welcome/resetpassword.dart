@@ -14,6 +14,7 @@ class ResetPasswordPage extends StatefulWidget {
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final TextEditingController _otpController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmNewPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _otpVerified = false; // Đánh dấu đã xác minh OTP hay chưa
 
@@ -33,6 +34,28 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   void resetPassword() {
+    String password = _newPasswordController.text;
+    String confirmPassword = _confirmNewPasswordController.text;
+    if (password.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Vui lòng điền đầy đủ thông tin.")),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Mật khẩu và xác nhận mật khẩu không khớp.")),
+      );
+      return;
+    }
+
+    if (password.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Mật khẩu phải có ít nhất 8 ký tự.")),
+      );
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       // Xử lý API đặt lại mật khẩu
       showDialog(
@@ -44,7 +67,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Đóng dialog
-                Navigator.pop(context); // Quay lại trang Login
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => LoginPage())
+                ); // Quay lại trang Login
               },
               child: Text("OK"),
             ),
@@ -108,7 +133,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   child: Column(
                     children: [
                       TextFormField(
-                        controller: _newPasswordController,
+                        controller:   _newPasswordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: "Mật khẩu mới",
@@ -123,6 +148,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           }
                           return null;
                         },
+                      ),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: _confirmNewPasswordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: "Xác nhận mật khẩu",
+                          border: OutlineInputBorder(),
+                        ),
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
