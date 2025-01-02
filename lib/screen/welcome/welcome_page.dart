@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test2/screen/welcome/login.dart';
-import 'package:test2/screen/welcome/register.dart';
+import 'package:test2/screen/home1/home.dart'; // Thêm import cho HomePage
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -8,86 +7,30 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  bool showOptions = false; // Biến trạng thái để hiển thị Login và Register
+  @override
+  void initState() {
+    super.initState();
+    // Chuyển đến HomePage sau 4 giây
+    Future.delayed(Duration(seconds: 4), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/img/thumb/cam.jpg"), // Đường dẫn ảnh nền
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Ảnh nền full màn hình
+          Image.asset(
+            'assets/img/logo/Gourmet3.jpg', // Thay bằng đường dẫn ảnh nền của bạn
             fit: BoxFit.cover,
           ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Dòng chào mừng luôn hiển thị
-              Text(
-                "Welcome to the App!",
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 40),
-              if (!showOptions) ...[
-                // Hiển thị nút Let's Start nếu chưa nhấn
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      showOptions = true; // Hiển thị các tùy chọn Login và Register
-                    });
-                  },
-                  child: Text("Bắt Đầu"),
-                ),
-              ] else ...[
-                // Hiển thị các nút Login và Register khi nhấn Let's Start
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                    );
-                  },
-                  child: Text("Đăng nhập"),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
-                    );
-                  },
-                  child: Text("Đăng kí"),
-                ),
-              ],
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }
