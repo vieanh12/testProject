@@ -65,6 +65,14 @@ flutter:
   assets:
     - assets/img/logo/Gourmet3.jpg
     - assets/img/logo/Gourmet3logo.png
+    - assets/img/food/bwelinton.jpg
+    - assets/img/food/comboga.jpg
+    - assets/img/food/comboham.jpg
+    - assets/img/food/combosteak.jpg
+    - assets/img/food/ham.jpg
+    - assets/img/food/kfc.jpg
+    - assets/img/food/spgt.jpeg
+    - assets/img/food/steak.jpg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
