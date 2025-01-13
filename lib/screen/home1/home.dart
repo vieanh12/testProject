@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:test2/screen/template.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -7,203 +8,302 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomePage> {
-  int _currentIndex = 0;
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
 
-  final List<String> sliderImages = [
+  final List<String> slideImages = [
     'assets/img/food/comboga.jpg',
-    'assets/img/food/combosteak.jpg',
     'assets/img/food/comboham.jpg',
+    'assets/img/food/combosteak.jpg',
   ];
 
-  final List<String> promoImages = [
-    'assets/img/food/bwelinton.jpg',
-    'assets/img/food/ham.jpg',
-    'assets/img/food/kfc.jpg',
-    'assets/img/food/spgt.jpeg',
-    'assets/img/food/steak.jpg',
+  final List<Map<String, String>> promotions = [
+    {
+      'image': 'assets/img/food/bwelinton.jpg',
+      'title': 'Bò Wellington',
+      'oldPrice': '200,000đ',
+      'newPrice': '150,000đ',
+    },
+    {
+      'image': 'assets/img/food/ham.jpg',
+      'title': 'Hamburger',
+      'oldPrice': '300,000đ',
+      'newPrice': '250,000đ',
+    },
+    {
+      'image': 'assets/img/food/kfc.jpg',
+      'title': 'Gà rán',
+      'oldPrice': '250,000đ',
+      'newPrice': '200,000đ',
+    },
+    {
+      'image': 'assets/img/food/spgt.jpeg',
+      'title': 'Mỳ Spaghetti',
+      'oldPrice': '200,000đ',
+      'newPrice': '150,000đ',
+    },
+    {
+      'image': 'assets/img/food/steak.jpg',
+      'title': 'Steak',
+      'oldPrice': '200,000đ',
+      'newPrice': '150,000đ',
+    },
   ];
 
-  final List<String> newsImages = [
-    'assets/news1.jpg',
-    'assets/news2.jpg',
-    'assets/news3.jpg',
-    'assets/news4.jpg',
-    'assets/news5.jpg',
+  final List<Map<String, String>> newsData = [
+    {'image': 'assets/img/logo/news1.png', 'title': 'Khai Trương'},
+    {'image': 'assets/img/logo/news2.jpg', 'title': 'Dịch vụ giao hàng'},
+    {'image': 'assets/img/logo/news3.jpg', 'title': 'Dịch vụ đặt bàn'},
+    {'image': 'assets/img/news4.jpg', 'title': 'Tin tức 4'},
+    {'image': 'assets/img/news5.jpg', 'title': 'Tin tức 5'},
   ];
 
   @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(seconds: 2), (Timer timer) {
+      if (_currentPage < slideImages.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFDAEFDA), // Thêm màu nền
-      appBar: AppBar(
-        backgroundColor: Color(0xFF8EA383),
-        title: Text(
-          'GOURMET',
-          style: TextStyle(
-          fontFamily: 'SedgwickAve',
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () {
-              // Xử lý sự kiện giỏ hàng
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
+    return TemplateScreen(
+      currentIndex: 0,
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Hai ô "Đặt bàn" và "Giao đi"
+            _buildTopButtons(),
+            _buildAutoSlide(),
+            _buildSectionTitle('Khuyến mại đặc biệt'),
+            _buildPromotionSection(),
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Đặt bàn'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF8EA383),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Giao đi'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF8EA383),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              padding: const EdgeInsets.only(bottom: 8.0), // Khoảng trống nhỏ giữa navbar dưới và phần tin tức
             ),
-
-            // 2. 3 slide ảnh tự động lướt
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 2),
-                height: 200,
-                viewportFraction: 1.0,
-              ),
-              items: sliderImages.map((image) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20), // Đường cong 50%
-                        image: DecorationImage(
-                          image: AssetImage(image),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-
-            // 3. Phần "Khuyến mại đặc biệt"
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Khuyến mại đặc biệt',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              height: 150,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: promoImages.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(horizontal: 8),
-                    width: 120,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(promoImages[index]),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // 4. Phần "Tin tức"
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Tin tức',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: newsImages.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(horizontal: 8),
-                    width: 100,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(newsImages[index]),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  );
-                },
-              ),
-            ),
+            _buildSectionTitle('Tin tức'),
+            _buildNewsSection(),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.black54,
-        backgroundColor: Color(0xFF8EA383),
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+    );
+  }
+
+  Widget _buildTopButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text('Đặt bàn', style: TextStyle(fontSize: 16)),
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
-            label: 'Đặt hàng',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Thông báo',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Tài khoản',
+          SizedBox(width: 16),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text('Giao đi', style: TextStyle(fontSize: 16)),
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildAutoSlide() {
+    return Container(
+      height: 200,
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: slideImages.length,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              image: DecorationImage(
+                image: AssetImage(slideImages[index]),
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPromotionSection() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: promotions.map((item) {
+          return Container(
+            margin: EdgeInsets.only(right: 16, left: 16),
+            width: MediaQuery.of(context).size.width * 0.48, // Mới: Chia làm 2 phần
+            height: 320, // Mới: Gấp đôi chiều cao
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                      image: DecorationImage(
+                        image: AssetImage(item['image']!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      item['title']!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item['oldPrice']!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          item['newPrice']!,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildNewsSection() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: newsData.map((item) {
+          return Container(
+            margin: EdgeInsets.only(right: 16, left: 16),
+            width: MediaQuery.of(context).size.width * 0.48, // Mới: Chia làm 2 phần
+            height: 270, // Mới: Gấp đôi chiều cao
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                      image: DecorationImage(
+                        image: AssetImage(item['image']!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      item['title']!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
       ),
     );
   }

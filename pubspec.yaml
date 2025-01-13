@@ -73,6 +73,14 @@ flutter:
     - assets/img/food/kfc.jpg
     - assets/img/food/spgt.jpeg
     - assets/img/food/steak.jpg
+    - assets/img/icon/hamb.png
+    - assets/img/icon/promo.png
+    - assets/img/icon/spgtt.png
+    - assets/img/icon/steakk.png
+    - assets/img/icon/chic.png
+    - assets/img/logo/news1.png
+    - assets/img/logo/news2.jpg
+    - assets/img/logo/news3.jpg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

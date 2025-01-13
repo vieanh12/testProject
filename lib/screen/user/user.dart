@@ -1,126 +1,147 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:test2/screen/template.dart';
 
-class UserPage extends StatelessWidget {
-  final bool isLoggedIn;
-  final String? username;
-  final String? avatarPath;
-
-  UserPage({this.isLoggedIn = false, this.username, this.avatarPath});
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tài khoản'),
-        backgroundColor: Color(0xFF8ea383),
-      ),
-      body: Container(
-        color: Color(0xFF8ea383), // Màu nền cho trang
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: isLoggedIn
-              ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    // Logic đổi ảnh đại diện
-                  },
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: avatarPath != null
-                        ? FileImage(File(avatarPath!))
-                        : AssetImage('assets/avatar_placeholder.png')
-                    as ImageProvider,
+    return TemplateScreen(
+      currentIndex: 0, // Icon tương ứng với Home
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Hai nút "Đặt bàn" và "Giao đi"
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Logic "Đặt bàn"
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF8EA383),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text('Đặt bàn'),
                   ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Center(
-                child: Text(
-                  username ?? "Tên người dùng",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Logic "Giao đi"
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF8EA383),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text('Giao đi'),
                   ),
                 ),
-              ),
-              SizedBox(height: 30),
-              _buildOption('Lịch sử đặt hàng'),
-              Divider(color: Colors.white),
-              _buildOption('Điểm thưởng'),
-              Divider(color: Colors.white),
-              _buildOption('Cài đặt tài khoản'),
-              Divider(color: Colors.white),
-              _buildOption('Đăng xuất'),
-            ],
-          )
-              : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Hãy tạo tài khoản để tận hưởng ưu đãi dành riêng cho bạn',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              ],
+            ),
+            SizedBox(height: 20),
+
+            // Slide tự động
+            SizedBox(
+              height: 180,
+              child: PageView(
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/login');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Color(0xFF8ea383),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 16),
-                    ),
-                    child: Text(
-                      'Đăng nhập',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/register');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Color(0xFF8ea383),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 16),
-                    ),
-                    child: Text(
-                      'Đăng ký',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
+                  _buildSlide('assets/img/food/comboga.jpg'),
+                  _buildSlide('assets/img/food/comboham.jpg'),
+                  _buildSlide('assets/img/food/combosteak.jpg'),
                 ],
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 20),
+
+            // Khuyến mại đặc biệt
+            Text(
+              'Khuyến mại đặc biệt',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 150,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _buildPromotionItem('assets/img/food/bwelinton.jpg'),
+                  _buildPromotionItem('assets/img/food/ham.jpg'),
+                  _buildPromotionItem('assets/img/food/kfc.jpg'),
+                  _buildPromotionItem('assets/img/food/spgt.jpg'),
+                  _buildPromotionItem('assets/img/food/steak.jpg'),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // Tin tức
+            Text(
+              'Tin tức',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 100,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: List.generate(5, (index) {
+                  return _buildNewsItem('News ${index + 1}');
+                }),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildOption(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 18,
-          color: Colors.white,
+  // Widget cho từng slide
+  Widget _buildSlide(String imagePath) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        image: DecorationImage(
+          image: AssetImage(imagePath),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  // Widget cho item Khuyến mại
+  Widget _buildPromotionItem(String imagePath) {
+    return Container(
+      width: 150,
+      margin: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        image: DecorationImage(
+          image: AssetImage(imagePath),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  // Widget cho item Tin tức
+  Widget _buildNewsItem(String title) {
+    return Container(
+      width: 100,
+      margin: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.lightBlueAccent,
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(fontSize: 14),
         ),
       ),
     );
