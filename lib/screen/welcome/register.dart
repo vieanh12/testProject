@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:test2/screen/welcome/login.dart';
-import 'package:test2/screen/welcome/welcome_page.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -8,46 +6,21 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailPhoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+  TextEditingController();
 
-  // Regular expression for password validation
-  bool validatePassword(String password) {
-    final passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$');
-    return passwordRegex.hasMatch(password);
-  }
-
-  void registerUser() {
+  void _register() {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      // Gửi API đăng ký (tạm thời hiển thị thông báo thành công)
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = false;
-        });
-
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Thành công"),
-            content: Text("Đăng ký tài khoản thành công!"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text("OK"),
-              ),
-            ],
-          ),
-        );
-      });
+      // Xử lý đăng ký thành công
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đăng ký thành công!')),
+      );
+      // Điều hướng đến trang User Page hoặc Login
+      Navigator.pop(context);
     }
   }
 
@@ -55,140 +28,120 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Register"),
-        backgroundColor: Colors.orange,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Quay về trang Welcome
-          },
-        ),
+        title: Text('Đăng ký'),
+        backgroundColor: Color(0xFF8ea383),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  "Đăng ký",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
-                  textAlign: TextAlign.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Tạo tài khoản mới',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Tên người dùng',
+                  border: OutlineInputBorder(),
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: "Tên người dùng",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Vui lòng nhập tên người dùng.";
-                    }
-                    return null;
-                  },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Tên người dùng không được để trống';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _emailPhoneController,
+                decoration: InputDecoration(
+                  labelText: 'Email hoặc Số điện thoại',
+                  border: OutlineInputBorder(),
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Vui lòng nhập email.";
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return "Email không hợp lệ.";
-                    }
-                    return null;
-                  },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email hoặc Số điện thoại không được để trống';
+                  }
+                  final emailRegex = RegExp(
+                      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+                  final phoneRegex = RegExp(r"^\d{10}$");
+                  if (!emailRegex.hasMatch(value) &&
+                      !phoneRegex.hasMatch(value)) {
+                    return 'Vui lòng nhập email hoặc số điện thoại hợp lệ';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Mật khẩu',
+                  border: OutlineInputBorder(),
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: "Mật khẩu",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Vui lòng nhập mật khẩu.";
-                    }
-                    if (!validatePassword(value)) {
-                      return "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ và số.";
-                    }
-                    return null;
-                  },
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Mật khẩu không được để trống';
+                  }
+                  if (value.length < 8) {
+                    return 'Mật khẩu phải có ít nhất 8 ký tự';
+                  }
+                  if (!RegExp(r'[A-Za-z]').hasMatch(value) ||
+                      !RegExp(r'[0-9]').hasMatch(value)) {
+                    return 'Mật khẩu phải chứa cả chữ và số';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _confirmPasswordController,
+                decoration: InputDecoration(
+                  labelText: 'Xác nhận mật khẩu',
+                  border: OutlineInputBorder(),
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: "Xác nhận mật khẩu",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Vui lòng xác nhận mật khẩu.";
-                    }
-                    if (value != _passwordController.text) {
-                      return "Mật khẩu không khớp.";
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Xác nhận mật khẩu không được để trống';
+                  }
+                  if (value != _passwordController.text) {
+                    return 'Mật khẩu không khớp';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _register,
+                  child: Text('Đăng ký'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Color(0xFF8ea383),
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                   ),
-                  onPressed: _isLoading ? null : registerUser,
-                  child: _isLoading
-                      ? CircularProgressIndicator(
-                    color: Colors.white,
-                  )
-                      : Text("Đăng ký"),
                 ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Bạn đã có tài khoản? "),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: (context) => LoginPage())
-                        );// Điều hướng tới LoginPage
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            "Đăng nhập ngay",
-                            style: TextStyle(
-                              color: Colors.orange,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Icon(Icons.arrow_forward, color: Colors.orange),
-                        ],
-                      ),
-                    ),
-                  ],
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Đã có tài khoản? Đăng nhập',
+                    style: TextStyle(color: Color(0xFF8ea383)),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
