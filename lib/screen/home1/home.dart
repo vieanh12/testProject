@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:test2/screen/template.dart';
+import 'package:test2/screen/cart/cart_screen.dart';
+import 'package:test2/screen/cart/cart_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
