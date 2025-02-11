@@ -42,7 +42,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  image_picker: ^0.8.7+5
   flutter_launcher_icons: ^0.13.1
+  provider: ^6.0.0
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -56,8 +59,29 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  fonts:
+    - family: SedgwickAve
+      fonts:
+        - asset: assets/font/SedgwickAve-Regular.ttf
   assets:
-    - assets/img/thumb/cam.jpg
+    - assets/img/logo/Gourmet3.jpg
+    - assets/img/logo/Gourmet3logo.png
+    - assets/img/food/bwelinton.jpg
+    - assets/img/food/comboga.jpg
+    - assets/img/food/comboham.jpg
+    - assets/img/food/combosteak.jpg
+    - assets/img/food/ham.jpg
+    - assets/img/food/kfc.jpg
+    - assets/img/food/spgt.jpeg
+    - assets/img/food/steak.jpg
+    - assets/img/icon/hamb.png
+    - assets/img/icon/promo.png
+    - assets/img/icon/spgtt.png
+    - assets/img/icon/steakk.png
+    - assets/img/icon/chic.png
+    - assets/img/logo/news1.png
+    - assets/img/logo/news2.jpg
+    - assets/img/logo/news3.jpg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

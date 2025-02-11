@@ -1,71 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:test2/screen/welcome/otpverify.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    TextEditingController emailOrPhoneController = TextEditingController();
+
+    String? validateInput(String emailOrPhone) {
+      if (emailOrPhone.isEmpty) {
+        return 'Vui lòng điền email hoặc số điện thoại!';
+      }
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      final phoneRegex = RegExp(r'^\d{10}$');
+      if (!emailRegex.hasMatch(emailOrPhone) && !phoneRegex.hasMatch(emailOrPhone)) {
+        return 'Email hoặc số điện thoại không đúng định dạng!';
+      }
+      return null;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Forgot Password"),
-        backgroundColor: Colors.orange,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Quay lại trang Login
-          },
-        ),
+        title: Text('Quên mật khẩu'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Quên mật khẩu",
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.orange,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 40),
-            Text(
-              "Nhập email của bạn và chúng tôi sẽ gửi hướng dẫn để đặt lại mật khẩu.",
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
+            Text('Quên mật khẩu', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
             TextField(
-              decoration: InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-              ),
+              controller: emailOrPhoneController,
+              decoration: InputDecoration(labelText: 'Email hoặc số điện thoại'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                padding: EdgeInsets.symmetric(vertical: 16),
-              ),
               onPressed: () {
-                // Thêm logic xử lý gửi email đặt lại mật khẩu tại đây
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text("Email Sent"),
-                    content: Text(
-                        "Hướng dẫn đặt lại mật khẩu đã được gửi đến email của bạn."),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("OK"),
-                      ),
-                    ],
+                String emailOrPhone = emailOrPhoneController.text.trim();
+                String? errorMessage = validateInput(emailOrPhone);
+                if (errorMessage != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
+                  return;
+                }
+                bool isPhone = RegExp(r'^\d{10}$').hasMatch(emailOrPhone);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OTPVerificationPage(identifier: emailOrPhone, isPhone: isPhone),
                   ),
                 );
               },
-              child: Text("Gửi"),
+              child: Text('Gửi liên kết đặt lại mật khẩu'),
             ),
           ],
         ),

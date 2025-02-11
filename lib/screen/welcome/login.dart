@@ -1,105 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:test2/screen/welcome/register.dart';
-import 'package:test2/screen/welcome/welcome_page.dart';
-import 'package:test2/screen/welcome/forgotpassword.dart';
-
+import 'package:test2/model/user.dart';
 
 class LoginPage extends StatelessWidget {
+  final Function(User) onLoginSuccess;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  LoginPage({Key? key, required this.onLoginSuccess}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login Page"),
-        backgroundColor: Colors.orangeAccent,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => WelcomePage()),
-            );
-          },
-        ),
+        backgroundColor: const Color(0xFF8EA383),
+        title: const Text('Đăng nhập'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              "Login",
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.orangeAccent,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 40),
             TextField(
-              decoration: InputDecoration(
-                labelText: "Email",
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 16),
             TextField(
-              decoration: InputDecoration(
-                labelText: "Password",
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Mật khẩu',
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
             ),
-            SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ForgotPasswordPage()),
-                  );
-                },
-                child: Text(
-                  "Quên mật khẩu?",
-                  style: TextStyle(color: Colors.orangeAccent),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
+            const SizedBox(height: 24),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orangeAccent,
-                padding: EdgeInsets.symmetric(vertical: 16),
-              ),
               onPressed: () {
-                // Thêm logic xử lý đăng nhập tại đây
+                // Demo login
+                onLoginSuccess(User(
+                  name: 'Nguyễn Văn A',
+                  imageUrl: 'https://via.placeholder.com/60',
+                ));
               },
-              child: Text("Login"),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Bạn chưa có tài khoản?"),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
-                    );
-                  },
-                  child: Text(
-                    "Đăng ký ngay",
-                    style: TextStyle(
-                      color: Colors.orangeAccent,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF8EA383),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text('Đăng nhập'),
             ),
           ],
         ),
