@@ -1,148 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:test2/model/user.dart';
 
-class RegisterPage extends StatefulWidget {
-  @override
-  _RegisterPageState createState() => _RegisterPageState();
-}
+class RegisterPage extends StatelessWidget {
+  final Function(User) onRegisterSuccess;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
 
-class _RegisterPageState extends State<RegisterPage> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailPhoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-  TextEditingController();
-
-  void _register() {
-    if (_formKey.currentState!.validate()) {
-      // Xử lý đăng ký thành công
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đăng ký thành công!')),
-      );
-      // Điều hướng đến trang User Page hoặc Login
-      Navigator.pop(context);
-    }
-  }
+  RegisterPage({Key? key, required this.onRegisterSuccess}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Đăng ký'),
-        backgroundColor: Color(0xFF8ea383),
+        backgroundColor: const Color(0xFF8EA383),
+        title: const Text('Đăng ký'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Tạo tài khoản mới',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Họ và tên',
+                border: OutlineInputBorder(),
               ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: 'Tên người dùng',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Tên người dùng không được để trống';
-                  }
-                  return null;
-                },
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
               ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _emailPhoneController,
-                decoration: InputDecoration(
-                  labelText: 'Email hoặc Số điện thoại',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email hoặc Số điện thoại không được để trống';
-                  }
-                  final emailRegex = RegExp(
-                      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-                  final phoneRegex = RegExp(r"^\d{10}$");
-                  if (!emailRegex.hasMatch(value) &&
-                      !phoneRegex.hasMatch(value)) {
-                    return 'Vui lòng nhập email hoặc số điện thoại hợp lệ';
-                  }
-                  return null;
-                },
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Mật khẩu',
+                border: OutlineInputBorder(),
               ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Mật khẩu',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Mật khẩu không được để trống';
-                  }
-                  if (value.length < 8) {
-                    return 'Mật khẩu phải có ít nhất 8 ký tự';
-                  }
-                  if (!RegExp(r'[A-Za-z]').hasMatch(value) ||
-                      !RegExp(r'[0-9]').hasMatch(value)) {
-                    return 'Mật khẩu phải chứa cả chữ và số';
-                  }
-                  return null;
-                },
+              obscureText: true,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                // Demo register
+                onRegisterSuccess(User(
+                  name: _nameController.text,
+                  imageUrl: 'https://via.placeholder.com/60',
+                ));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF8EA383),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _confirmPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'Xác nhận mật khẩu',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Xác nhận mật khẩu không được để trống';
-                  }
-                  if (value != _passwordController.text) {
-                    return 'Mật khẩu không khớp';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _register,
-                  child: Text('Đăng ký'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8ea383),
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Đã có tài khoản? Đăng nhập',
-                    style: TextStyle(color: Color(0xFF8ea383)),
-                  ),
-                ),
-              ),
-            ],
-          ),
+              child: const Text('Đăng ký'),
+            ),
+          ],
         ),
       ),
     );

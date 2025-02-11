@@ -1,30 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:test2/screen/welcome/forgotpassword.dart';
+import 'package:test2/model/user.dart';
 
 class LoginPage extends StatelessWidget {
+  final Function(User) onLoginSuccess;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  LoginPage({Key? key, required this.onLoginSuccess}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Đăng nhập')),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF8EA383),
+        title: const Text('Đăng nhập'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(decoration: InputDecoration(labelText: 'Tên đăng nhập')),
             TextField(
-              decoration: InputDecoration(labelText: 'Mật khẩu'),
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Mật khẩu',
+                border: OutlineInputBorder(),
+              ),
               obscureText: true,
             ),
-            SizedBox(height: 20),
-            ElevatedButton(onPressed: () {}, child: Text('Đăng nhập')),
-            TextButton(
+            const SizedBox(height: 24),
+            ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
-                );
+                // Demo login
+                onLoginSuccess(User(
+                  name: 'Nguyễn Văn A',
+                  imageUrl: 'https://via.placeholder.com/60',
+                ));
               },
-              child: Text('Quên mật khẩu?'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF8EA383),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text('Đăng nhập'),
             ),
           ],
         ),

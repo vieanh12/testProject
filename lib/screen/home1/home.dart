@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomePage> {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: Color(0xFF8EA383),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -129,12 +129,19 @@ class _HomeScreenState extends State<HomePage> {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Color(0xFF8EA383),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: Text('Giao đi', style: TextStyle(fontSize: 16)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.local_shipping, size: 20),
+                  SizedBox(width: 8), // Khoảng cách giữa icon và text
+                  Text('Giao đi', style: TextStyle(fontSize: 16)),
+                ],
+              ),
             ),
           ),
         ],

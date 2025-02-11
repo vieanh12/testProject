@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test2/screen/home1/home.dart';
 import 'package:test2/screen/order/order.dart';
+import 'package:test2/screen/user/accountsetting.dart';
 
 class TemplateScreen extends StatelessWidget {
   final Widget child;
@@ -57,9 +58,9 @@ class TemplateScreen extends StatelessWidget {
               );
               break;
             case 3:
-            // Placeholder cho màn hình tài khoản
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Chức năng Tài khoản chưa được triển khai')),
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => AccountSettings()),
               );
               break;
           }
